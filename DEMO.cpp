@@ -224,37 +224,51 @@ void Display(LISTPACKAGES l){
 	else{
 	NODEPACKAGE temp = l.head;
 		while(temp!=NULL){
-		cout <<endl<< "       		Thong tin don hang:  "<<endl;
-		cout << "Ma buu kien   : " << temp->data.code <<endl;
-		cout << "Ten hang      : " << temp->data.item<<endl;
-		cout << "Ten nguoi gui : " << temp->data.sender<<endl;
-		cout << "SDT           : " << temp->data.sender_number<<endl;
-		cout << "Ten nguoi nhan: " << temp->data.receiver<<endl;cout << "SDT           : "<< temp->data.receiver_number<<endl;
-		cout << "Dia diem giao : " << temp->data.address<<endl;
-		cout << "Thanh tien    : " << temp->data.price<<" VND"<<endl;
-		cout << "Khoi luong    : " <<temp->data.mass<<" kg"<<endl;
-		cout << "Ngay gui      : " << setw(2)<<setfill('0')	<<temp->data.time.day<<"/"<< setw(2)<<setfill('0')<<temp->data.time.month<<"/"<<temp->data.time.year<< endl;
-		cout << "Shipper       : " << temp->data.shipper<<endl;
-		if(temp->data.status == 0) cout << "Tinh trang    : Dang giao!"<<endl;
-		else if(temp->data.status == 1) cout << "Tinh trang    : Da giao!"<<endl;
+	cout << "------------------------------------------------" << endl;
+    cout << "|               Thong tin don hang:            |" << endl;
+    cout << "| Ma buu kien   : " << setw(29) << left << temp->data.code << "|" << endl;
+    cout << "| Ten hang      : " << setw(29) << left << temp->data.item << "|" << endl;
+    cout << "| Ten nguoi gui : " << setw(29) << left << temp->data.sender << "|" << endl;
+    cout << "| SDT           : " << setw(29) << left << temp->data.sender_number << "|" << endl;
+    cout << "| Ten nguoi nhan: " << setw(29) << left << temp->data.receiver << "|" << endl;
+    cout << "| SDT           : " << setw(29) << left << temp->data.receiver_number << "|" << endl;
+    cout << "| Dia diem giao : " << setw(29) << left << temp->data.address << "|" << endl;
+    cout << "| Thanh tien    : " << setw(25) << left << temp->data.price << " VND|" << endl;
+    cout << "| Khoi luong    : " << setw(25) << left << temp->data.mass << " kg |" << endl;
+    cout << "| Ngay gui      : " << setw(2) << setfill('0') << temp->data.time.day << "/"
+                                   << setw(2) << setfill('0') << temp->data.time.month << "/"
+                                   << temp->data.time.year << setw(21) << setfill(' ') << "                   |" << endl;
+    cout << "| Shipper       : " << setw(29) << left << temp->data.shipper << "|" << endl;
+    if(temp->data.status == 0) 
+        cout << "| Tinh trang    : " << setw(29) << left << "Dang giao!" << "|" << endl;
+    else if(temp->data.status == 1) 
+        cout << "| Tinh trang    : " << setw(29) << left << "Da giao!" << "|" << endl;
+    cout << "------------------------------------------------" << endl<<endl<<endl;
 		temp = temp->next;
 	}
  }
 }
 void DisplayOne(NODEPACKAGE temp){
-					cout <<endl<< "       		Thong tin don hang:  "<<endl;
-			cout << "Ma buu kien   : " << temp->data.code <<endl;
-			cout << "Ten hang      : " << temp->data.item<<endl;
-			cout << "Ten nguoi gui : " << temp->data.sender<<endl;
-			cout << "SDT           : " << temp->data.sender_number<<endl;
-			cout << "Ten nguoi nhan: " << temp->data.receiver<<endl;cout << "SDT           : "<< temp->data.receiver_number<<endl;
-			cout << "Dia diem giao : " << temp->data.address<<endl;
-			cout << "Thanh tien    : " << temp->data.price<<" VND"<<endl;
-			cout << "Khoi luong    : " <<temp->data.mass<<" kg"<<endl;
-			cout << "Ngay gui      : " << setw(2)<<setfill('0')	<<temp->data.time.day<<"/"<< setw(2)<<setfill('0')<<temp->data.time.month<<"/"<<temp->data.time.year<< endl;
-			cout << "Shipper       : " << temp->data.shipper<<endl;
-			if(temp->data.status == 0) cout << "Tinh trang    : Dang giao!"<<endl;
-			else if(temp->data.status == 1) cout << "Tinh trang    : Da giao!"<<endl<<endl;
+	cout << "------------------------------------------------" << endl;
+    cout << "|               Thong tin don hang:            |" << endl;
+    cout << "| Ma buu kien   : " << setw(29) << left << temp->data.code << "|" << endl;
+    cout << "| Ten hang      : " << setw(29) << left << temp->data.item << "|" << endl;
+    cout << "| Ten nguoi gui : " << setw(29) << left << temp->data.sender << "|" << endl;
+    cout << "| SDT           : " << setw(29) << left << temp->data.sender_number << "|" << endl;
+    cout << "| Ten nguoi nhan: " << setw(29) << left << temp->data.receiver << "|" << endl;
+    cout << "| SDT           : " << setw(29) << left << temp->data.receiver_number << "|" << endl;
+    cout << "| Dia diem giao : " << setw(29) << left << temp->data.address << "|" << endl;
+    cout << "| Thanh tien    : " << setw(25) << left << temp->data.price << " VND|" << endl;
+    cout << "| Khoi luong    : " << setw(25) << left << temp->data.mass << " kg |" << endl;
+    cout << "| Ngay gui      : " << setw(2) << setfill('0') << temp->data.time.day << "/"
+                                   << setw(2) << setfill('0') << temp->data.time.month << "/"
+                                   << temp->data.time.year << setw(21) << setfill(' ') << "                   |" << endl;
+    cout << "| Shipper       : " << setw(29) << left << temp->data.shipper << "|" << endl;
+    if(temp->data.status == 0) 
+        cout << "| Tinh trang    : " << setw(29) << left << "Dang giao!" << "|" << endl;
+    else if(temp->data.status == 1) 
+        cout << "| Tinh trang    : " << setw(29) << left << "Da giao!" << "|" << endl;
+    cout << "------------------------------------------------" << endl<<endl<<endl;
 }
 void interFace(){
 	cout << endl;
@@ -497,19 +511,7 @@ void Summary(LISTPACKAGES &l){
 		temp=l.head;
 		while(temp!=NULL){
 			if(temp->data.address==address){
-			cout <<endl<< "       		Thong tin don hang:  "<<endl;
-			cout << "Ma buu kien   : " << temp->data.code <<endl;
-			cout << "Ten hang      : " << temp->data.item<<endl;
-			cout << "Ten nguoi gui : " << temp->data.sender<<endl;
-			cout << "SDT           : " << temp->data.sender_number<<endl;
-			cout << "Ten nguoi nhan: " << temp->data.receiver<<endl;cout << "SDT           : "<< temp->data.receiver_number<<endl;
-			cout << "Dia diem giao : " << temp->data.address<<endl;
-			cout << "Thanh tien    : " << temp->data.price<<" VND"<<endl;
-			cout << "Khoi luong    : " <<temp->data.mass<<" kg"<<endl;
-			cout << "Ngay gui      : " << setw(2)<<setfill('0')	<<temp->data.time.day<<"/"<< setw(2)<<setfill('0')<<temp->data.time.month<<"/"<<temp->data.time.year<< endl;
-			cout << "Shipper       : " << temp->data.shipper<<endl;
-			if(temp->data.status == 0) cout << "Tinh trang    : Dang giao!"<<endl;
-			else if(temp->data.status == 1) cout << "Tinh trang    : Da giao!"<<endl<<endl;
+			DisplayOne(temp);
 			}
 		temp=temp->next;
 		}
@@ -532,7 +534,7 @@ bool login(string user,string pass){
 string GetPassword() {
     string pass = "";
     char ch;
-    while ((ch = _getch()) != '\r') { // '\r' là ki tu Enter
+    while ((ch = _getch()) != '\r') { // '\r' lÃ  ki tu Enter
         if (ch == '\b' && !pass.empty()) { // Xoa ki tu neu nhin Backspace
             pass.pop_back();
             cout << "\b \b"; // Xoa ki tu hien thi tren man hinh
@@ -670,7 +672,7 @@ void Option(string user){
 				else if(confirm=='N' || confirm=='n'){
 					system("cls");Option(user);break;
 				}
-				else cout << "Lua chon khong hop le! Vui long nhap lai." << endl;
+				else cout << "Lua chon khong hop le! Vui long nhap lai." << endl<<endl<<endl;
 			}while(confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
 				break;
 			case 0:
@@ -678,4 +680,3 @@ void Option(string user){
 		}
 	}
 }
-
