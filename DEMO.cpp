@@ -1,13 +1,7 @@
 #include <iostream>
-#include <string>
 #include <fstream>
 #include <iomanip>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <sstream>
 #include <conio.h>
-#include <chrono>
 #include <thread>
 using namespace std;
 struct Date {
@@ -93,23 +87,32 @@ void DisplayOne(NODEPACKAGE temp);
 void interFace(); 
 string Address(PACKAGE x); 
 string LoaiBoXuongDongODau(string& s); 
-string NguoiGiao(PACKAGE& x, string s, LISTEMPLOYEES ld); 
+string ShipperClassify(PACKAGE& x, string s, LISTEMPLOYEES ld); 
 void Save(LISTPACKAGES& l, string user);  
 bool check_empty(LISTPACKAGES& l); 
 void Classify(LISTPACKAGES l, int x); 
-void ChinhSua(LISTPACKAGES& l, int x); 
+void Edit(LISTPACKAGES& l, int x); 
 void UpdateStatus(LISTPACKAGES& l, int xy); 
 void Summary(LISTPACKAGES& l); 
 bool login(string user, string pass);
 string GetPassword();
-void loginoutput();
+void logindisplay();
 void Option(string user);
 void logo();
+int checkinput(string s);
 int main() {
     system("color 3");
     logo();
-    loginoutput();
+    logindisplay();
     return 0;
+}
+int checkinput(string s){
+	for(char c:s){
+		if(!isdigit(c)) return -1;
+	}
+	if(s=="") return -1;
+	else
+	return stoi(s);
 }
 void Read_Account(ifstream &filein,ACCOUNT &x){
 	getline(filein,x.username,',');
@@ -191,7 +194,7 @@ bool Read_Package(ifstream &filein,PACKAGE &x,LISTEMPLOYEES &ld) {
     filein >> x.mass;filein.ignore();
     Read_Date(filein, x.time);
     filein >> x.status;filein.ignore();
-    x.shipper=NguoiGiao(x,x.address,ld);
+    x.shipper=ShipperClassify(x,x.address,ld);
 	return true;
 }
 void Read_All_Packages(ifstream &filein,LISTPACKAGES &l,LISTEMPLOYEES &ld){
@@ -314,7 +317,7 @@ string LoaiBoXuongDongODau(string &s) {
     while (!s.empty() && s.front() == '\n') s.erase(0, 1); 
     return s;
 }
-string NguoiGiao(PACKAGE &x,string s,LISTEMPLOYEES ld){
+string ShipperClassify(PACKAGE &x,string s,LISTEMPLOYEES ld){
 	ifstream filein;
 	filein.open("danhsachnhanviengiaohang.txt",ios::in);
 	Read_All_Employees(filein,ld);
@@ -328,7 +331,6 @@ string NguoiGiao(PACKAGE &x,string s,LISTEMPLOYEES ld){
 	return x.shipper;
 }
 void Save(LISTPACKAGES &l,string user){
-	cin.ignore();
 	time_t currentTime = time(nullptr);
 	tm *timeInfo = localtime(&currentTime);
 	ofstream fileout; int demdagiao=0,demdanggiao=0,tongtien=0;
@@ -408,7 +410,7 @@ void Classify(LISTPACKAGES l, int x){
 			break;
 	}
 }
-void ChinhSua(LISTPACKAGES &l,int x){
+void Edit(LISTPACKAGES &l,int x){
 	NODEPACKAGE temp=l.head;LISTEMPLOYEES ld;
 	while(temp!=NULL && temp->data.code!=x) temp=temp->next;
 	if(temp==NULL) cout << "Khong tim thay ma buu kien can sua!"<<endl;
@@ -469,7 +471,7 @@ void UpdateStatus(LISTPACKAGES &l,int xy){
 	}
 }
 void Summary(LISTPACKAGES &l){
-	NODEPACKAGE temp = l.head;int demHC=0,demLC=0,demTK=0,demCL=0,demST=0,demNHS=0,demHV=0,demHS=0,option;string address;
+	NODEPACKAGE temp = l.head;int demHC=0,demLC=0,demTK=0,demCL=0,demST=0,demNHS=0,demHV=0,demHS=0,checkoption;string address,option;
 	while(temp!=NULL){
 		if     (temp->data.address=="Hai Chau") demHC++;
 		else if(temp->data.address=="Lien Chieu") demLC++;
@@ -492,8 +494,9 @@ void Summary(LISTPACKAGES &l){
 		cout << "8. Hoang Sa     : " << demHS << " buu kien"<<endl<<endl;
 		bool check =false;
 		while(!check){
-		cout <<endl<< "Nhap STT de xem chi tiet cac don hang : ";cin>>option;
-		switch(option){
+		cout <<endl<< "Nhap STT de xem chi tiet cac don hang : ";getline(cin,option);
+		checkoption = checkinput(option);
+		switch(checkoption){
 		case 1: address="Hai Chau";check=true;break;
 		case 2: address="Lien Chieu";check=true;break;
 		case 3: address="Thanh Khe";check=true;break;
@@ -505,7 +508,7 @@ void Summary(LISTPACKAGES &l){
 		default:cout<<"Vui long nhap dung STT!"<<endl;
 		}
 	}
-	if((option==1 && demHC==0) || (option==2 && demLC==0) || (option==3 && demTK==0) || (option==4 && demCL==0) || (option==5 && demST==0) || (option==6 && demNHS==0) || (option==7 && demHV==0) || (option==8 && demHS==0))
+	if((checkoption==1 && demHC==0) || (checkoption==2 && demLC==0) || (checkoption==3 && demTK==0) || (checkoption==4 && demCL==0) || (checkoption==5 && demST==0) || (checkoption==6 && demNHS==0) || (checkoption==7 && demHV==0) || (checkoption==8 && demHS==0))
 	cout << "Khong co buu kien nao o khu vuc nay!!"<<endl<<endl;
 	else{
 		temp=l.head;
@@ -546,7 +549,7 @@ string GetPassword() {
     cout << endl;
     return pass;
 }
-void loginoutput() {
+void logindisplay() {
     string user, pass;
     bool loggedIn = false;
     do {
@@ -587,14 +590,15 @@ void logo(){
 void Option(string user){
 	LISTPACKAGES l;InitListPackages(l);
 	LISTEMPLOYEES ld;InitListEmployees(ld);
-	int option;
+	string option;
 	ifstream filein;filein.open("danhsachbuukien.txt",ios::in);Read_All_Packages(filein,l,ld);
 	while(1){
 		system("cls");
 		interFace();
-    	cin >> option;
+    	getline(cin,option);
+    	int check = checkinput(option);
 		system("cls");
-		switch(option){
+		switch(check){
 			case 1:
 				if(!filein.is_open()) cout << "Khong the doc du lieu!";
 				else cout << "Nhap thanh cong!"<<endl;
@@ -602,25 +606,29 @@ void Option(string user){
 				_getch();
 				break;
 			case 2:
-				int option3;
+				{
+				string option2;
 				cout << "--------------- Lua chon ------------"<<endl;
 				cout << "     1 Xem toan bo danh sach. "<<endl;
 				cout << "     2 Xem buu kien theo phan loai."<<endl;
-				cout << "Nhap lua chon : ";cin>>option3;
-				if(option3 == 1) Display(l);
-				else if(option3==2){
-				int option33;
+				cout << "Nhap lua chon : ";getline(cin,option2);
+				int checkcase2 = checkinput(option2);
+				if(checkcase2 == 1) Display(l);
+				else if(checkcase2==2){
+				string option22;
 				cout << "---------------- Lua chon ---------------------" <<endl;
 				cout << "     1 Phan loai theo TINH TRANG: Da giao!"  << endl;
 				cout << "     2 Phan loai theo TINH TRANG: Dang giao!"  << endl;
 				cout << "-----------------------------------------------"<<endl;
-				cout << "Nhap lua chon : ";cin>>option33;
+				cout << "Nhap lua chon : ";getline(cin,option22);
+				int checkcase22 = checkinput(option22);
 				if(check_empty(l)==true) {
-					Classify(l,option33);}
+					Classify(l,checkcase22);}
 				}
 				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
 				_getch();
 				break;
+			}
 			case 3:
 				if(check_empty(l)==true){
 					Summary(l);
@@ -629,18 +637,23 @@ void Option(string user){
 				_getch();
 				break;
 			case 4:
-				if(check_empty(l)==true){
+				if(check_empty(l)==true)
+				{
 				Display(l);
-				cout << "Nhap ma buu kien can chinh sua : ";int x;cin>>x;
-				ChinhSua(l,x);}
+				cout << "Nhap ma buu kien can chinh sua : ";string x;getline(cin,x);
+				int checkx = checkinput(x);
+				Edit(l,checkx);
+				}
 				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
 				_getch();
 				break;
 			case 5:
 				if(check_empty(l)==true) {
 				Display(l);
-				int xy;cout <<"Nhap ma buu kien can thay doi trang thai : ";cin>>xy;
-				UpdateStatus(l,xy);}
+				string xy;cout <<"Nhap ma buu kien can thay doi trang thai : ";getline(cin,xy);
+				int checkxy = checkinput(xy);
+				UpdateStatus(l,checkxy);
+				}
 				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
 				_getch();
 				break;
@@ -667,7 +680,7 @@ void Option(string user){
 					this_thread::sleep_for(chrono::milliseconds(150));
 					}
 					system("cls");
-      				cin.ignore();loginoutput();break;
+      				cin.ignore();logindisplay();break;
 				}
 				else if(confirm=='N' || confirm=='n'){
 					system("cls");Option(user);break;
