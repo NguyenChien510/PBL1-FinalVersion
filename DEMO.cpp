@@ -82,12 +82,11 @@ void Read_All_Packages(ifstream& filein, LISTPACKAGES& l, LISTEMPLOYEES& ld);
 NODEPACKAGE createPackage(PACKAGE x); 
 void InitListPackages(LISTPACKAGES& l); 
 void InsertPackage(LISTPACKAGES& l, NODEPACKAGE x); 
-void Display(LISTPACKAGES l); 
-void DisplayOne(NODEPACKAGE temp); 
+void Display(NODEPACKAGE temp); 
 void interFace(); 
 string Address(PACKAGE x); 
 string LoaiBoXuongDongODau(string& s); 
-string ShipperClassify(PACKAGE& x, string s, LISTEMPLOYEES ld); 
+string ShipperClassify(string s, LISTEMPLOYEES ld); 
 void Save(LISTPACKAGES& l, string user);  
 bool check_empty(LISTPACKAGES& l); 
 void Classify(LISTPACKAGES l, int x); 
@@ -194,7 +193,7 @@ bool Read_Package(ifstream &filein,PACKAGE &x,LISTEMPLOYEES &ld) {
     filein >> x.mass;filein.ignore();
     Read_Date(filein, x.time);
     filein >> x.status;filein.ignore();
-    x.shipper=ShipperClassify(x,x.address,ld);
+    x.shipper=ShipperClassify(x.address,ld);
 	return true;
 }
 void Read_All_Packages(ifstream &filein,LISTPACKAGES &l,LISTEMPLOYEES &ld){
@@ -222,12 +221,8 @@ void InsertPackage(LISTPACKAGES &l,NODEPACKAGE x) {
         l.tail = x;
     }
 }
-void Display(LISTPACKAGES l){
-	if (l.head == NULL) cout << "DANH SACH RONG!" <<endl;
-	else{
-	NODEPACKAGE temp = l.head;
-		while(temp!=NULL){
-	cout << "------------------------------------------------" << endl;
+void Display(NODEPACKAGE temp) {
+    cout << "------------------------------------------------" << endl;
     cout << "|               Thong tin don hang:            |" << endl;
     cout << "| Ma buu kien   : " << setw(29) << left << temp->data.code << "|" << endl;
     cout << "| Ten hang      : " << setw(29) << left << temp->data.item << "|" << endl;
@@ -238,41 +233,17 @@ void Display(LISTPACKAGES l){
     cout << "| Dia diem giao : " << setw(29) << left << temp->data.address << "|" << endl;
     cout << "| Thanh tien    : " << setw(25) << left << temp->data.price << " VND|" << endl;
     cout << "| Khoi luong    : " << setw(25) << left << temp->data.mass << " kg |" << endl;
-    cout << "| Ngay gui      : " << setw(2) << setfill('0') << temp->data.time.day << "/"
-                                   << setw(2) << setfill('0') << temp->data.time.month << "/"
-                                   << temp->data.time.year << setw(21) << setfill(' ') << "                   |" << endl;
+    cout << "| Ngay gui      : " <<right<< setw(2) << setfill('0') << temp->data.time.day << "/"
+                                 << setw(2) << setfill('0') << temp->data.time.month << "/"
+                                 << temp->data.time.year << setw(20) << setfill(' ') << "                   |" << endl;
     cout << "| Shipper       : " << setw(29) << left << temp->data.shipper << "|" << endl;
     if(temp->data.status == 0) 
         cout << "| Tinh trang    : " << setw(29) << left << "Dang giao!" << "|" << endl;
     else if(temp->data.status == 1) 
         cout << "| Tinh trang    : " << setw(29) << left << "Da giao!" << "|" << endl;
-    cout << "------------------------------------------------" << endl<<endl<<endl;
-		temp = temp->next;
-	}
- }
+    cout << "------------------------------------------------" << endl << endl << endl;
 }
-void DisplayOne(NODEPACKAGE temp){
-	cout << "------------------------------------------------" << endl;
-    cout << "|               Thong tin don hang:            |" << endl;
-    cout << "| Ma buu kien   : " << setw(29) << left << temp->data.code << "|" << endl;
-    cout << "| Ten hang      : " << setw(29) << left << temp->data.item << "|" << endl;
-    cout << "| Ten nguoi gui : " << setw(29) << left << temp->data.sender << "|" << endl;
-    cout << "| SDT           : " << setw(29) << left << temp->data.sender_number << "|" << endl;
-    cout << "| Ten nguoi nhan: " << setw(29) << left << temp->data.receiver << "|" << endl;
-    cout << "| SDT           : " << setw(29) << left << temp->data.receiver_number << "|" << endl;
-    cout << "| Dia diem giao : " << setw(29) << left << temp->data.address << "|" << endl;
-    cout << "| Thanh tien    : " << setw(25) << left << temp->data.price << " VND|" << endl;
-    cout << "| Khoi luong    : " << setw(25) << left << temp->data.mass << " kg |" << endl;
-    cout << "| Ngay gui      : " << setw(2) << setfill('0') << temp->data.time.day << "/"
-                                   << setw(2) << setfill('0') << temp->data.time.month << "/"
-                                   << temp->data.time.year << setw(21) << setfill(' ') << "                   |" << endl;
-    cout << "| Shipper       : " << setw(29) << left << temp->data.shipper << "|" << endl;
-    if(temp->data.status == 0) 
-        cout << "| Tinh trang    : " << setw(29) << left << "Dang giao!" << "|" << endl;
-    else if(temp->data.status == 1) 
-        cout << "| Tinh trang    : " << setw(29) << left << "Da giao!" << "|" << endl;
-    cout << "------------------------------------------------" << endl<<endl<<endl;
-}
+
 void interFace(){
 	cout << endl;
 	cout << "------------- QUAN LI BUU KIEN TAI BUU CUC -------------"<<endl;
@@ -317,18 +288,18 @@ string LoaiBoXuongDongODau(string &s) {
     while (!s.empty() && s.front() == '\n') s.erase(0, 1); 
     return s;
 }
-string ShipperClassify(PACKAGE &x,string s,LISTEMPLOYEES ld){
-	ifstream filein;
+string ShipperClassify(string s,LISTEMPLOYEES ld){
+	ifstream filein;string tempstring;
 	filein.open("danhsachnhanviengiaohang.txt",ios::in);
 	Read_All_Employees(filein,ld);
 	NODEEMPLOYEE temp = ld.head;
 	while(temp!=NULL){
 		if(LoaiBoXuongDongODau(temp->data.area)==s){
-		x.shipper=temp->data.shipper;break;
+		tempstring=temp->data.shipper;break;
 		}
 		temp=temp->next;
 	}
-	return x.shipper;
+	return tempstring;
 }
 void Save(LISTPACKAGES &l,string user){
 	time_t currentTime = time(nullptr);
@@ -390,7 +361,7 @@ void Classify(LISTPACKAGES l, int x){
     			cout << "                                                                         DANH SACH CAC BUU KIEN : DA GIAO "<<endl<<endl;
 				while(temp!=NULL){
     			if(temp->data.status==1){
-					DisplayOne(temp);
+					Display(temp);
 					find=true;
 				}
 				temp=temp->next;
@@ -401,7 +372,7 @@ void Classify(LISTPACKAGES l, int x){
     		cout << "                                                                        DANH SACH CAC BUU KIEN : DANG GIAO "<<endl<<endl;
    			while(temp!=NULL){
     			if(temp->data.status==0){
-					DisplayOne(temp);
+					Display(temp);
 					find=true;
 			}
 			temp=temp->next;
@@ -410,65 +381,92 @@ void Classify(LISTPACKAGES l, int x){
 			break;
 	}
 }
-void Edit(LISTPACKAGES &l,int x){
-	NODEPACKAGE temp=l.head;LISTEMPLOYEES ld;
-	while(temp!=NULL && temp->data.code!=x) temp=temp->next;
-	if(temp==NULL) cout << "Khong tim thay ma buu kien can sua!"<<endl;
-	else{
-		int luaChon;
-        cout <<endl<< "Chon thong tin can chinh sua:" << endl;
-        cout << "1. Ten hang" << endl;
-        cout << "2. Nguoi gui" << endl;
-        cout << "3. Nguoi nhan" << endl;
-        cout << "4. Dia chi giao hang" << endl;
-        cout << "5. Khoi luong" << endl;
-        cout << "Nhap lua chon: ";
-        cin >> luaChon;
-        cin.ignore(); 
-        switch(luaChon){
-            case 1:
-                cout << "Nhap ten hang moi: ";
-                getline(cin, temp->data.item);
-                break;
-            case 2:
-                cout << "Nhap ten nguoi gui moi: ";
-                getline(cin, temp->data.sender);
-                break;
-            case 3:
-                cout << "Nhap ten nguoi nhan moi: ";
-                getline(cin, temp->data.receiver);
-                break;
-            case 4:
-                temp->data.address = Address(temp->data);
-                break;
-            case 5:
-                cout << "Nhap khoi luong moi: ";
-                cin >> temp->data.mass;
-                temp->data.price = (temp->data.mass * 250)+temp->data.dongia;
-                break;
-            default:
-                cout << "Lua chon khong hop le!" << endl;
+void Edit(LISTPACKAGES &l, int x) {
+    NODEPACKAGE temp = l.head;
+    LISTEMPLOYEES ld;
+    while (temp != NULL && temp->data.code != x) {
+        temp = temp->next;
+    }
+    if (temp == NULL) {
+        cout <<endl<<"Khong tim thay ma buu kien can sua!" << endl;
+        cout << endl << "Nhap ma buu kien can chinh sua (hoac 'N' de quay lai): "; 
+        string x; 
+        getline(cin, x);
+        if (x == "N" || x == "n") return;
+        int checkx = checkinput(x);
+        Edit(l, checkx);
+    } else {
+        while (true) {
+            string luaChon;
+            cout << endl << "Chon thong tin can chinh sua:" << endl;
+            cout << "1. Ten hang" << endl;
+            cout << "2. Nguoi gui" << endl;
+            cout << "3. Nguoi nhan" << endl;
+            cout << "4. Dia chi giao hang" << endl;
+            cout << "5. Khoi luong" << endl;
+            cout << "Nhap lua chon (hoac 'N' de quay lai): ";
+            getline(cin, luaChon);
+            if (luaChon == "N" || luaChon == "n") return;
+            int option = checkinput(luaChon);
+            switch (option) {
+                case 1:
+                    cout << "Nhap ten hang moi: ";
+                    getline(cin, temp->data.item);
+                    break;
+                case 2:
+                    cout << "Nhap ten nguoi gui moi: ";
+                    getline(cin, temp->data.sender);
+                    break;
+                case 3:
+                    cout << "Nhap ten nguoi nhan moi: ";
+                    getline(cin, temp->data.receiver);
+                    break;
+                case 4:
+                    temp->data.address = Address(temp->data);
+                    break;
+                case 5:
+                    cout << "Nhap khoi luong moi: ";
+                    cin >> temp->data.mass;
+                    cin.ignore();
+                    temp->data.price = (temp->data.mass * 250) + temp->data.dongia;
+                    break;
+                default:
+                    cout << endl << "Lua chon khong hop le! Vui long nhap lai." << endl;
+                    continue; 
+            }
+            cout << "Cap Nhat Thanh Cong!" << endl;
+            break; 
         }
-       cout << "Cap Nhat Thanh Cong!" << endl;
-	}
-}	
+    }
+}
+	
 void UpdateStatus(LISTPACKAGES &l,int xy){
 	PACKAGE x;
 	NODEPACKAGE temp=l.head;
 	while(temp!=NULL && temp->data.code!=xy) temp = temp->next;
-	if(temp == NULL ) cout << "Khong tim thay ma buu kien can thay doi!"<<endl;
+	if(temp == NULL ){
+	cout <<endl<< "Khong tim thay ma buu kien can thay doi!"<<endl;
+	cout << endl << "Nhap ma buu kien can thay doi (hoac 'N' de quay lai): "; 
+        string x; 
+        getline(cin, x);
+        if (x == "N" || x == "n") return;
+        int checkx = checkinput(x);
+        UpdateStatus(l, checkx);
+	}
 	else{ 
-		int thay;
+		string thay;cout<<endl;
 		cout << "-----------Lua chon-----------"<<endl;
 		cout << "         0.Dang Giao!"<<endl;
 		cout << "         1.Da Giao!"<<endl;
-		cout << "Nhap lua chon : ";cin>>thay;
-		switch(thay){
+		cout << "Nhap lua chon : ";getline(cin,thay);
+		int option = checkinput(thay);
+		switch(option){
 			case 0:temp->data.status=0;cout<<"Cap Nhat Thanh Cong!"<<endl;break;
 			case 1:temp->data.status=1;cout<<"Cap Nhat Thanh Cong!"<<endl;break;
-			default:cout<<"Vui long nhap 0 hoac 1!"<<endl;break;
+			default:cout<<endl<<"Vui long nhap 0 hoac 1!"<<endl;break;
 		}
 	}
+
 }
 void Summary(LISTPACKAGES &l){
 	NODEPACKAGE temp = l.head;int demHC=0,demLC=0,demTK=0,demCL=0,demST=0,demNHS=0,demHV=0,demHS=0,checkoption;string address,option;
@@ -494,7 +492,8 @@ void Summary(LISTPACKAGES &l){
 		cout << "8. Hoang Sa     : " << demHS << " buu kien"<<endl<<endl;
 		bool check =false;
 		while(!check){
-		cout <<endl<< "Nhap STT de xem chi tiet cac don hang : ";getline(cin,option);
+		cout <<endl<< "Nhap STT de xem chi tiet cac don hang (hoac 'N' de quay lai): ";getline(cin,option);
+		if (option == "N" || option == "n") break;
 		checkoption = checkinput(option);
 		switch(checkoption){
 		case 1: address="Hai Chau";check=true;break;
@@ -514,7 +513,7 @@ void Summary(LISTPACKAGES &l){
 		temp=l.head;
 		while(temp!=NULL){
 			if(temp->data.address==address){
-			DisplayOne(temp);
+			Display(temp);
 			}
 		temp=temp->next;
 		}
@@ -587,109 +586,165 @@ void logo(){
 	}
 	filein.close();
 }
-void Option(string user){
-	LISTPACKAGES l;InitListPackages(l);
-	LISTEMPLOYEES ld;InitListEmployees(ld);
-	string option;
-	ifstream filein;filein.open("danhsachbuukien.txt",ios::in);Read_All_Packages(filein,l,ld);
-	while(1){
-		system("cls");
-		interFace();
-    	getline(cin,option);
-    	int check = checkinput(option);
-		system("cls");
-		switch(check){
-			case 1:
-				if(!filein.is_open()) cout << "Khong the doc du lieu!";
-				else cout << "Nhap thanh cong!"<<endl;
-				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
-				_getch();
-				break;
-			case 2:
-				{
-				string option2;
-				cout << "--------------- Lua chon ------------"<<endl;
-				cout << "     1 Xem toan bo danh sach. "<<endl;
-				cout << "     2 Xem buu kien theo phan loai."<<endl;
-				cout << "Nhap lua chon : ";getline(cin,option2);
-				int checkcase2 = checkinput(option2);
-				if(checkcase2 == 1) Display(l);
-				else if(checkcase2==2){
-				string option22;
-				cout << "---------------- Lua chon ---------------------" <<endl;
-				cout << "     1 Phan loai theo TINH TRANG: Da giao!"  << endl;
-				cout << "     2 Phan loai theo TINH TRANG: Dang giao!"  << endl;
-				cout << "-----------------------------------------------"<<endl;
-				cout << "Nhap lua chon : ";getline(cin,option22);
-				int checkcase22 = checkinput(option22);
-				if(check_empty(l)==true) {
-					Classify(l,checkcase22);}
-				}
-				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
-				_getch();
-				break;
-			}
-			case 3:
-				if(check_empty(l)==true){
-					Summary(l);
-				}
-				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
-				_getch();
-				break;
-			case 4:
-				if(check_empty(l)==true)
-				{
-				Display(l);
-				cout << "Nhap ma buu kien can chinh sua : ";string x;getline(cin,x);
-				int checkx = checkinput(x);
-				Edit(l,checkx);
-				}
-				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
-				_getch();
-				break;
-			case 5:
-				if(check_empty(l)==true) {
-				Display(l);
-				string xy;cout <<"Nhap ma buu kien can thay doi trang thai : ";getline(cin,xy);
-				int checkxy = checkinput(xy);
-				UpdateStatus(l,checkxy);
-				}
-				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
-				_getch();
-				break;
-			case 6:
-				if(l.head == NULL) cout << "DANH SACH CON TRONG!" <<endl;
-				else {
-				Save(l,user);
-				cout << "Luu Thanh Cong!"<<endl;}
-				cout <<endl <<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
-				_getch();
-				break;
-			case 7:
-				char confirm;
-				do{
-				cout << "Ban chac chan muon dang xuat ?"<<endl;
-				cout << "Y : Dang xuat!"<<endl;
-				cout << "N : Quay lai!"<<endl;
-				cout << "Nhap lua chon cua ban (Y/N): ";
-      			cin >> confirm;
-      			if(confirm=='Y' || confirm=='y'){
-      				cout << "Dang dang xuat";
-					for(int i =0;i<10;i++){
-					cout << ".";
-					this_thread::sleep_for(chrono::milliseconds(150));
-					}
-					system("cls");
-      				cin.ignore();logindisplay();break;
-				}
-				else if(confirm=='N' || confirm=='n'){
-					system("cls");Option(user);break;
-				}
-				else cout << "Lua chon khong hop le! Vui long nhap lai." << endl<<endl<<endl;
-			}while(confirm != 'Y' && confirm != 'y' && confirm != 'N' && confirm != 'n');
-				break;
-			case 0:
-				exit(0);
-		}
-	}
+void Option(string user) {
+    LISTPACKAGES l; InitListPackages(l);
+    LISTEMPLOYEES ld; InitListEmployees(ld);
+    string option;
+    while (1) {
+        system("cls");
+        interFace();
+        getline(cin, option);
+        int check = checkinput(option);
+        system("cls");
+        switch (check) {
+            case 1: {
+                while (true) {
+                    ifstream filein; filein.open("danhsachbuukien.txt", ios::in);
+                    Read_All_Packages(filein, l, ld);
+                    if (!filein.is_open()) {
+                        cout << "Khong the doc du lieu!" << endl;
+                    } else {
+                        cout << "Nhap thanh cong!" << endl;
+                    }
+                    cout <<endl<<endl<<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
+                    _getch();
+                    break;
+                }
+                break;
+            }
+            case 2: {
+                while (true) {
+                    if (check_empty(l)) {
+                    	here:
+                        string option2;
+                        cout << "--------------- Lua chon ------------" << endl;
+                        cout << "     1 Xem toan bo danh sach. " << endl;
+                        cout << "     2 Xem buu kien theo phan loai." << endl;
+                        cout << "Nhap lua chon (hoac 'N' de quay lai): "; getline(cin, option2);
+                        if (option2 == "N" || option2 == "n") break;
+                        int checkcase2 = checkinput(option2);
+                        if (checkcase2 == 1) {
+                            NODEPACKAGE temp = l.head;
+                            while (temp != NULL) {
+                                Display(temp); temp = temp->next;
+                            }
+                        } else if (checkcase2 == 2) {
+                            string option22;
+                            cout << "---------------- Lua chon ---------------------" << endl;
+                            cout << "     1 Phan loai theo TINH TRANG: Da giao!" << endl;
+                            cout << "     2 Phan loai theo TINH TRANG: Dang giao!" << endl;
+                            cout << "-----------------------------------------------" << endl;
+                            cout << "Nhap lua chon (hoac 'N' de quay lai): "; getline(cin, option22);
+                            if (option22 == "N" || option22 == "n") break;
+                            int checkcase22 = checkinput(option22);
+                            if (check_empty(l)) {
+                                Classify(l, checkcase22);
+                            }
+                        } else {
+                            cout <<endl<< "Lua chon khong hop le! Vui long nhap lai." << endl;
+                            this_thread::sleep_for(chrono::milliseconds(1000));
+                            system("cls");
+                            goto here;
+                        }
+                    }
+                    cout <<endl<<endl<<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
+                    _getch();
+                    break; 
+                }
+                break;
+            }
+            case 3: {
+                while (true) {
+                    if (check_empty(l)) {
+                        Summary(l);
+                    }
+                    cout <<endl<<endl<<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
+                    _getch();
+                    break; 
+                }
+                break;
+            }
+            case 4: {
+                while (true) {
+                    if (check_empty(l)) {
+                        NODEPACKAGE temp = l.head;
+                        while (temp != NULL) {
+                            Display(temp); temp = temp->next;
+                        }
+                        cout << "Nhap ma buu kien can chinh sua (hoac 'N' de quay lai): "; string x; getline(cin, x);
+                        if (x == "N" || x == "n") break;
+                        int checkx = checkinput(x);
+                        Edit(l, checkx);
+                    }
+                    cout <<endl<<endl<<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
+                    _getch();
+                    break; 
+                }
+                break;
+            }
+            case 5: {
+                while (true) {
+                    if (check_empty(l)) {
+                        NODEPACKAGE temp = l.head;
+                        while (temp != NULL) {
+                            Display(temp); temp = temp->next;
+                        }
+                        string xy; cout << "Nhap ma buu kien can thay doi trang thai (hoac 'N' de quay lai): "; getline(cin, xy);
+                        if (xy == "N" || xy == "n") break;
+                        int checkxy = checkinput(xy);
+                        UpdateStatus(l, checkxy);
+                    }
+                    cout <<endl<<endl<<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
+                    _getch();
+                    break; 
+                }
+                break;
+            }
+            case 6: {
+                while (true) {
+                    if (l.head == NULL) {
+                        cout << "DANH SACH CON TRONG!" << endl;
+                    } else {
+                        Save(l, user);
+                        cout << "Luu Thanh Cong!" << endl;
+                    }
+                    cout <<endl<<endl<<"BAM PHIM BAT KI DE QUAY TRO LAI.....";
+                    _getch();
+                    break; 
+                }
+                break;
+            }
+            case 7: {
+                char confirm;
+                while (true) {
+                    cout << "Ban chac chan muon dang xuat ?" << endl;
+                    cout << "Y : Dang xuat!" << endl;
+                    cout << "N : Quay lai!" << endl;
+                    cout << "Nhap lua chon cua ban (Y/N): ";
+                    cin >> confirm;
+                    if (confirm == 'Y' || confirm == 'y') {
+                        cout << "Dang dang xuat";
+                        for (int i = 0; i < 10; i++) {
+                            cout << ".";
+                            this_thread::sleep_for(chrono::milliseconds(150));
+                        }
+                        system("cls");
+                        cin.ignore(); logindisplay(); break;
+                    } else if (confirm == 'N' || confirm == 'n') {
+                        system("cls"); break;
+                    } else {
+                        cout << "Lua chon khong hop le! Vui long nhap lai." << endl << endl << endl;
+                        cin.clear(); 
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear the input buffer
+                        this_thread::sleep_for(chrono::milliseconds(1000));
+                        system("cls");
+                    }
+                }
+                break;
+            }
+            case 0:
+                exit(0);
+        }
+    }
 }
+
